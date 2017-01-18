@@ -1,6 +1,10 @@
 <?php
 class HTML
 {
+    public function __construct()
+    {
+        $this->setHeaderTitle($GLOBALS['webInfo']['web_name']);
+    }
     public function getHtml()
     {
         $return = '<!DOCTYPE html>';
@@ -17,16 +21,21 @@ class HTML
     private function getHeader()
     {
         $return = '<head>';
+        $return .= '<meta charset="utf-8">';
         $return .= $this->getHeaderTitle();
         $return .= '</head>';
         
-        return;
+        return $return;
     }
     
-    private $_header_title = 'TEST';
+    private $_header_title = '';
     public function setHeaderTitle($new)
     {
-        $this->_header_title = $new;
+        if ($new != '') {
+            $this->_header_title = $new . ' | ' . $GLOBALS['webInfo']['web_name'];
+        } else {
+            $this->_header_title = $GLOBALS['webInfo']['web_name'];
+        }
     }
     private function getHeaderTitle()
     {
@@ -43,13 +52,31 @@ class HTML
         return $return;
     }
     
-    private $_body_content = '';
-    public function addToBodyContent($new)
+    static private $_body_content = '';
+    public function addToBodyContent($new = '', $controllers = '', $views = '')
     {
-        $this->_body_content .= $new;
+        if (is_array($controllers)) {
+            foreach ($controllers as $controller) {
+                include $controller;
+            }
+        } else if ($controllers != '') {
+            include $controllers;
+        }
+        
+        if ($new != '') {
+            HTML::$_body_content .= $new;
+        }
+        
+        if (is_array($views)) {
+            foreach ($views as $view) {
+                HTML::$_body_content .= include $view;
+            }
+        } else if ($views != '') {
+            HTML::$_body_content .= include $views;
+        }
     }
     private function getBodyContent()
     {
-        return $this->_body_content;
+        return HTML::$_body_content;
     }
 }

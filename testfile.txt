@@ -1,0 +1,6 @@
+<?php
+$webInfo = Array
+(
+    [web_name] => TEST
+)
+;

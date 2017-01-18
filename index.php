@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ .'/autoload.php';
-
 $html = new HTML();
+$page = new Page();
 
-$pagePath = new Page_Path();
-
-$html->addToBodyContent('test123');
+$html->setHeaderTitle($page->getTitle());
+$html->addToBodyContent($page->getNavigation());
+$html->addToBodyContent('', $page->getPageControllers(), $page->getPageViews());
 
 print $html->getHtml();
